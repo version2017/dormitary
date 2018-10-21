@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.merit.dao.DormitaryDao">
+    <!-- 目的：为dao接口方法提供sql语句配置 -->
+
+    <select id="queryDormitaryById" parameterType="Integer" resultType="com.merit.entity.Dormitary">
+        SELECT * FROM dormitary WHERE dorm_id = #{id};
+    </select>
+
+    <select id="queryDormitaryAndProjectById" parameterType="Integer" resultType="java.util.Map">
+        SELECT d.*,p.*,per.* FROM dormitary d
+        LEFT JOIN project p ON d.proj_id=p.proj_id
+        LEFT JOIN person per ON d.empl_id_ref = per.empl_id
+        WHERE d.dorm_id = #{id};
+    </select>
+
+    <select id="queryDormitaryAndManaByProjId" parameterType="Integer" resultType="java.util.Map">
+        SELECT d.*,per.*,pro.*
+        FROM dormitary d
+        LEFT JOIN person per ON d.empl_id_ref = per.empl_id
+        LEFT JOIN project pro ON d.proj_id = pro.proj_id
+        WHERE d.proj_id = #{proj_id};
+    </select>
+
+    <select id="getDormitaryPlaces" resultType="String">
+        SELECT DISTINCT province FROM dormitary;
+    </select>
+
+    <select id="getDormitaryListWithLeaderInfor" parameterType="String" resultType="java.util.Map">
+        SELECT d.*,per.*,pro.PROJ_NAME
+        FROM dormitary d
+        LEFT JOIN person per ON d.empl_id_ref = per.empl_id
+        LEFT JOIN project pro ON d.proj_id = pro.proj_id
+        WHERE d.province = #{place};
+    </select>
+
+    <select id="getSectorDormitaryListMap" parameterType="Integer" resultType="java.util.Map">
+        SELECT d.*,per.*
+        FROM dormitary d
+        LEFT JOIN  person per ON d.dorm_id = per.dorm_id
+        LEFT JOIN project pro ON d.proj_id = pro.proj_id
+        LEFT JOIN sector s ON pro.sect_id = s.sect_id
+        WHERE s.sect_id = #{sectorManagerEmplId};
+    </select>
+
+    <update id="increaseOccuNum" parameterType="Integer">
+        UPDATE dormitary SET occu_num = occu_num+1 WHERE dorm_id = #{dormitaryId};
+    </update>
+
+    <update id="reduceOccuNum" parameterType="Integer">
+        UPDATE dormitary SET occu_num = occu_num-1 WHERE dorm_id = #{dormitaryId};
+    </update>
+
+    <select id="getTotalNum" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM dormitary;
+    </select>
+
+    <select id="queryDormitaryByPage" parameterType="Integer" resultType="com.merit.entity.Dormitary">
+        SELECT * FROM dormitary limit #{start},#{pageSize};
+    </select>
+
+    <select id="queryDormitaryAndProjectByPage" parameterType="Integer" resultType="java.util.Map">
+        SELECT * FROM dormitary d
+        LEFT JOIN project p ON d.proj_id=p.proj_id
+        limit #{start},#{pageSize};
+    </select>
+
+    <select id="queryDormitaryAndProjectByNameAndPage" resultType="java.util.Map">
+        SELECT * FROM dormitary d
+        LEFT JOIN project p ON d.proj_id=p.proj_id
+        WHERE dorm_name LIKE "%"#{dormitaryName}"%" limit #{start},#{pageSize};
+    </select>
+
+    <select id="queryDormitaryAndProjectByLocationAndPage" resultType="java.util.Map">
+        SELECT * FROM dormitary d
+        LEFT JOIN project p ON d.proj_id=p.proj_id
+        WHERE province = #{location} limit #{start},#{pageSize};
+    </select>
+
+    <select id="queryDormitayAndProjectByNameAndLocationAndPage" resultType="java.util.Map">
+        SELECT * FROM dormitary d
+        LEFT JOIN project p ON d.proj_id=p.proj_id
+        WHERE province = #{location} AND dorm_name LIKE "%"#{dormitaryName}"%" limit #{start},#{pageSize};
+    </select>
+
+
+    <select id="getNumOfQueryDormitaryByName" resultType="Integer">
+        SELECT COUNT(1) FROM dormitary WHERE dorm_name LIKE "%"#{dormitaryName}"%";
+    </select>
+
+    <select id="getNumOfQueryDormitaryByLocation" resultType="Integer">
+        SELECT COUNT(1) FROM dormitary WHERE province = #{location};
+    </select>
+
+    <select id="getNumOfQueryDormitayByNameAndLocation" resultType="Integer">
+        SELECT COUNT(1) FROM dormitary WHERE province = #{location} AND dorm_name LIKE "%"#{dormitaryName}"%";
+    </select>
+
+    <update id="updateDormitary" parameterType="com.merit.entity.Dormitary">
+        UPDATE dormitary SET province=#{province}, city=#{city}, address=#{address}, dorm_name=#{dormName},
+                            bed_num=#{bedNum}, occu_num=#{occuNum}, rent_date=#{rentDate}, remarks=#{retireTime},
+                            is_retire=#{isRetire}, retire_time=#{retireTime}, proj_id=#{projId}, empl_id_ref = #{emplIdRef}
+                        WHERE dorm_id = #{dormId};
+    </update>
+
+    <delete id="deleteDormitary" parameterType="Integer">
+        DELETE FROM dormitary WHERE dorm_id = #{dormitaryId};
+    </delete>
+
+    <insert id="addDormitary" parameterType="com.merit.entity.Dormitary">
+        INSERT INTO dormitary(province, city, address, dorm_name, bed_num, occu_num, rent_date, remarks, is_retire, retire_time, proj_id, empl_id_ref)
+                    VALUES(#{province}, #{city}, #{address}, #{dormName}, #{bedNum},
+                      <choose>
+                          <when test="occuNum == null">
+                            0,
+                          </when>
+                          <otherwise>
+                              #{occuNum},
+                          </otherwise>
+                      </choose>
+                    #{rentDate}, #{remarks}, #{isRetire}, #{retireTime}, #{projId}, #{emplIdRef});
+    </insert>
+
+    <select id="queryAllDormitary" resultType="com.merit.entity.Dormitary">
+        SELECT * FROM dormitary ORDER BY province;
+    </select>
+</mapper>

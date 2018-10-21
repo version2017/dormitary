@@ -1,0 +1,1 @@
+<c:set var="PROJECT_NAME" value="/dormitary" scope="page"/>

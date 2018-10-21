@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.merit.dao.SectorDao">
+
+    <select id="querySectorMapById" parameterType="Integer" resultType="java.util.Map">
+        SELECT s.*,p.* FROM sector s LEFT JOIN person p ON s.sect_mana=p.empl_id WHERE s.sect_id = #{id};
+    </select>
+
+    <select id="querySectorById" parameterType="Integer" resultType="com.merit.entity.Sector">
+        SELECT * FROM sector WHERE sect_id = #{id};
+    </select>
+
+    <select id="querySectorByName" parameterType="String" resultType="com.merit.entity.Sector">
+        SELECT * FROM sector WHERE sect_name = #{sectorName};
+    </select>
+
+    <select id="querySectorByManaEmplId" parameterType="Integer" resultType="com.merit.entity.Sector">
+        SELECT * FROM sector WHERE sect_mana = #{emplId};
+    </select>
+
+    <select id="getTotalNum" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM sector;
+    </select>
+
+    <select id="querySectorByPage" parameterType="Integer" resultType="java.util.Map">
+        SELECT s.*,p.* FROM sector s LEFT JOIN person p ON s.sect_mana=p.empl_id limit #{start},#{pageSize};
+    </select>
+
+    <select id="querySectorByNameAndPage" resultType="java.util.Map">
+        SELECT s.*,p.* FROM sector s
+        LEFT JOIN person p ON s.sect_mana=p.empl_id
+        WHERE s.sect_name LIKE "%"#{sectorName}"%" limit #{start},#{pageSize};
+    </select>
+
+
+    <select id="getNumOfQuerySectorByName" resultType="Integer">
+        SELECT COUNT(1) FROM sector WHERE sect_name LIKE "%"#{sectorName}"%";
+    </select>
+
+    <update id="updateSector" parameterType="com.merit.entity.Sector">
+        UPDATE sector SET sect_name=#{sectName}, pers_num=#{persNum}, sect_mana=
+                <choose>
+                    <when test="sectMana == 0">
+                        NULL
+                    </when>
+                    <otherwise>
+                        #{sectMana}
+                    </otherwise>
+                </choose>
+                WHERE sect_id = #{sectId};
+    </update>
+
+    <insert id="addSector" parameterType="com.merit.entity.Sector">
+        INSERT INTO sector(
+                            <if test="sectId != 0">
+                              sect_id,
+                            </if>
+                            sect_name,pers_num,sect_mana)
+                    VALUES(
+                            <if test="sectId != 0">
+                                #{sectId},
+                            </if>
+                            #{sectName}, #{persNum},
+                            <choose>
+                                <when test="sectMana == 0">
+                                    NULL
+                                </when>
+                                <otherwise>
+                                    #{sectMana}
+                                </otherwise>
+                            </choose>
+        );
+    </insert>
+
+    <delete id="delSector" parameterType="Integer">
+        DELETE FROM sector WHERE sect_id = #{id};
+    </delete>
+
+    <select id="queryAllSectorsMap" resultType="java.util.Map">
+        SELECT s.*,p.* FROM sector s
+        LEFT JOIN person p ON s.sect_mana=p.empl_id
+        ORDER BY CONVERT(s.sect_name USING gbk) COLLATE gbk_chinese_ci ASC;
+    </select>
+</mapper>

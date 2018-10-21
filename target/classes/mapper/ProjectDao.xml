@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.merit.dao.ProjectDao">
+
+    <select id="queryProjectMapById" parameterType="Integer" resultType="java.util.Map">
+        SELECT s.*,p.* FROM project s LEFT JOIN person p ON s.proj_mana=p.empl_id WHERE s.proj_id = #{id};
+    </select>
+
+    <select id="queryProjectById" parameterType="Integer" resultType="com.merit.entity.Project">
+        SELECT * FROM project WHERE proj_id = #{id};
+    </select>
+
+    <select id="queryAllProject" resultType="com.merit.entity.Project">
+        SELECT * FROM project;
+    </select>
+
+    <select id="queryProjectByKeyWord" parameterType="String" resultType="com.merit.entity.Project">
+        SELECT * FROM project WHERE proj_name LIKE "%"#{keyWord}"%";
+    </select>
+
+    <select id="queryProjectByManaEmplId" parameterType="Integer" resultType="com.merit.entity.Project">
+         SELECT * FROM project WHERE proj_mana = #{emplId};
+    </select>
+
+    <select id="queryProjectBySectId" parameterType="Integer" resultType="com.merit.entity.Project">
+        SELECT * FROM project WHERE sect_id = #{sectId};
+    </select>
+
+    <select id="getTotalNum" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM project;
+    </select>
+
+    <select id="queryProjectByPage" parameterType="Integer" resultType="java.util.Map">
+        SELECT p.*,s.*,person.* FROM project p LEFT JOIN sector s ON p.sect_id=s.sect_id LEFT JOIN person person on p.proj_mana=person.empl_id limit #{start},#{pageSize};
+    </select>
+
+    <select id="queryProjectByNameAndPage" resultType="java.util.Map">
+        SELECT pro.*,per.*,s.* FROM project pro
+        LEFT JOIN person per ON pro.proj_mana=per.empl_id
+        LEFT JOIN sector s ON pro.sect_id = s.sect_id
+        WHERE pro.proj_name LIKE "%"#{projectName}"%" limit #{start},#{pageSize};
+    </select>
+
+
+    <select id="getNumOfQueryProjectByName" resultType="Integer">
+        SELECT COUNT(1) FROM project WHERE proj_name LIKE "%"#{projectName}"%";
+    </select>
+
+    <update id="updateProject" parameterType="com.merit.entity.Project">
+        UPDATE project SET proj_name=#{projName}, sect_id=#{sectId}, proj_mana=#{projMana}
+        WHERE proj_id = #{projId};
+    </update>
+
+    <insert id="addProject" parameterType="com.merit.entity.Project">
+        INSERT INTO project(
+                            <if test="projId != 0">
+                                proj_id,
+                            </if>
+                            sect_id, proj_name, proj_mana)
+                    VALUES(
+                            <if test="projId != 0">
+                                #{projId},
+                            </if>
+                            <choose>
+                                <when test="sectId == 0">
+                                    NULL,
+                                </when>
+                                <otherwise>
+                                    #{sectId},
+                                </otherwise>
+                            </choose>
+                            #{projName}, #{projMana});
+    </insert>
+
+    <delete id="delProject" parameterType="Integer">
+        DELETE FROM project WHERE proj_id = #{id};
+    </delete>
+
+    <select id="queryProjectsByPage" parameterType="Integer" resultType="java.util.Map">
+        SELECT p.*,s.*,person.* FROM project p
+        LEFT JOIN sector s ON p.sect_id=s.sect_id
+        LEFT JOIN person person ON p.proj_mana=person.empl_id limit #{start},#{pageSize};
+    </select>
+
+    <delete id="deleteProjectOfSector" parameterType="Integer">
+        DELETE FROM project WHERE sect_id = #{sectorId};
+    </delete>
+</mapper>

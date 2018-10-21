@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.merit.dao.PersonDao">
+    <!-- 目的：为dao接口方法提供sql语句配置 -->
+
+    <select id="queryAllPerson" resultType="com.merit.entity.Person">
+        SELECT * FROM person;
+    </select>
+
+    <select id="queryPersonByOpenid" parameterType="String" resultType="com.merit.entity.Person">
+        SELECT * FROM person WHERE wechat = #{openid};
+    </select>
+
+    <select id="queryPersonsByNameKeyWord" parameterType="String" resultType="com.merit.entity.Person">
+        SELECT * FROM person WHERE name LIKE "%"#{keyWord}"%";
+    </select>
+
+    <insert id="savePerson" parameterType="com.merit.entity.Person">
+      INSERT INTO person(empl_id, name, sex, phon_num, wechat)
+      VALUES (#{emplId}, #{name}, #{sex}, #{phonNum}, #{wechat});
+    </insert>
+
+    <select id="getPersonsInTheDormitary" parameterType="Integer" resultType="com.merit.entity.Person">
+        SELECT * FROM person WHERE dorm_id = #{id};
+    </select>
+
+    <update id="checkIn">
+      UPDATE person set dorm_id = #{dormitaryId} WHERE empl_id = #{workNumber};
+    </update>
+
+    <update id="leave">
+        UPDATE person set dorm_id = NULL WHERE empl_id = #{emplId};
+    </update>
+
+    <select id="queryPersonByEmplid" parameterType="Integer" resultType="com.merit.entity.Person">
+        SELECT * FROM person WHERE empl_id = #{emplId};
+    </select>
+
+    <select id="queryAllProjectManagers" resultType="com.merit.entity.Person">
+        SELECT p.* FROM person p
+        LEFT JOIN role r ON p.empl_id = r.empl_id
+        WHERE r.role_name = '项目经理'
+        ORDER BY CONVERT(p.name USING gbk) COLLATE gbk_chinese_ci ASC;
+    </select>
+
+    <select id="queryAllSectorManagers" resultType="com.merit.entity.Person">
+        SELECT p.* FROM person p
+        LEFT JOIN role r ON p.empl_id = r.empl_id
+        WHERE r.role_name = '部门经理'
+        ORDER BY CONVERT(p.name USING gbk) COLLATE gbk_chinese_ci ASC;
+    </select>
+
+    <select id="getTotalNum" resultType="Integer">
+        SELECT count(1) FROM person;
+    </select>
+
+    <select id="getTotalNumByRole" parameterType="String" resultType="Integer">
+        SELECT count(1) FROM person p
+        LEFT JOIN role r ON p.empl_id = r.empl_id
+        WHERE r.role_name = #{role}
+    </select>
+
+    <select id="queryOrdinaryPersonNumByRole" resultType="Integer">
+        SELECT COUNT(1) FROM person p LEFT JOIN role r ON p.empl_id = r.empl_id WHERE r.role_name IS NULL;
+    </select>
+
+    <select id="queryPersonMapsByPage" parameterType="Integer" resultType="java.util.Map">
+        SELECT p.*,s.*,d.*,r.* FROM person p
+        LEFT JOIN sector s ON p.sect_id=s.sect_id
+        LEFT JOIN dormitary d ON p.dorm_id=d.dorm_id
+        LEFT JOIN role r ON p.empl_id = r.empl_id limit #{start},#{pageSize};
+    </select>
+
+    <select id="queryPersonMapsByName" parameterType="String" resultType="java.util.Map">
+        SELECT p.*,s.*,d.*,r.* FROM person p
+        LEFT JOIN sector s ON p.sect_id = s.sect_id
+        LEFT JOIN dormitary d ON p.dorm_id = d.dorm_id
+        LEFT JOIN role r ON p.empl_id = r.empl_id
+        WHERE p.name=#{name};
+    </select>
+
+    <select id="queryPersonMapsByRole" resultType="java.util.Map">
+        SELECT p.*,s.*,d.*,r.* FROM person p
+        LEFT JOIN sector s ON p.sect_id=s.sect_id
+        LEFT JOIN dormitary d ON p.dorm_id=d.dorm_id
+        LEFT JOIN role r ON p.empl_id=r.empl_id
+        WHERE r.role_name = #{role}
+        limit #{start},#{pageSize};
+    </select>
+
+    <select id="queryOrdinaryPersonMapsByRole" resultType="java.util.Map">
+        SELECT p.*,s.*,d.*,r.* FROM person p
+        LEFT JOIN sector s ON p.sect_id=s.sect_id
+        LEFT JOIN dormitary d ON p.dorm_id=d.dorm_id
+        LEFT JOIN role r ON p.empl_id = r.empl_id
+        WHERE r.role_name IS NULL limit #{start},#{pageSize};
+    </select>
+
+    <insert id="addPerson" parameterType="com.merit.entity.Person">
+        INSERT INTO person(empl_id, dorm_id, sect_id, name, sex, phon_num, wechat)
+                    VALUES(#{emplId},
+                    <choose>
+                        <when test="#{dormId == 0}">
+                            NULL,
+                        </when>
+                        <otherwise>
+                            #{dormId},
+                        </otherwise>
+                    </choose>
+                    #{sectId}, #{name}, #{sex}, #{phonNum}, #{wechat});
+    </insert>
+
+    <select id="queryPersonMapByEmplid" parameterType="Integer" resultType="java.util.Map">
+        SELECT p.*,s.*,d.*,r.* FROM person p
+        LEFT JOIN sector s ON p.sect_id = s.sect_id
+        LEFT JOIN dormitary d ON p.dorm_id = d.dorm_id
+        LEFT JOIN role r ON p.empl_id = r.empl_id
+        WHERE p.empl_id=#{emplId};
+    </select>
+
+    <select id="queryAllDormMana" resultType="java.util.Map">
+        SELECT p.*,r.*
+        FROM person p
+        LEFT JOIN role r ON p.empl_id = r.empl_id
+        WHERE r.role_name = "宿舍管理员"
+        ORDER BY CONVERT(p.name USING gbk) COLLATE gbk_chinese_ci ASC;
+    </select>
+
+    <select id="queryDormManaByName" parameterType="String" resultType="java.util.Map">
+        SELECT p.*,r.*
+        FROM person p
+        LEFT JOIN role r ON p.empl_id = r.empl_id
+        WHERE p.name = #{name} and r.role_name = "宿舍管理员"
+        ORDER BY CONVERT(p.name USING gbk) COLLATE gbk_chinese_ci ASC;
+    </select>
+
+    <update id="updatePerson" parameterType="com.merit.entity.Person">
+        UPDATE person SET
+                        <choose>
+                            <when test="dormId == 0">
+                                dorm_id=NULL,
+                            </when>
+                            <otherwise>
+                                dorm_id=#{dormId},
+                            </otherwise>
+                        </choose>
+                        <choose>
+                            <when test="sectId == 0">
+                                sect_id=NULL,
+                            </when>
+                            <otherwise>
+                                sect_id=#{sectId},
+                            </otherwise>
+                        </choose>
+                        name=#{name}, sex=#{sex}, phon_num=#{phonNum},
+                        wechat=#{wechat}
+          WHERE empl_id = #{emplId};
+    </update>
+
+    <delete id="deletePerson" parameterType="Integer">
+        DELETE FROM person WHERE empl_id=#{emplId};
+    </delete>
+</mapper>

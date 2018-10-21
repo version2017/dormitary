@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wxs>
+    <!-- 第一个微信 -->
+    <wx>
+        <!-- 0:订阅号 1 服务号  2企业号 -->
+        <id>wx01</id>
+        <type>2</type>
+        <AppId>wxc4091240d37beba6</AppId>
+        <AppSecret>vXZ4E36BbFDELmgkvQ93jJog-FVS8dOhJ_i-PLUc3Hs</AppSecret>
+        <macid></macid>
+        <key></key>
+        <notify_url></notify_url>
+        <web_notify_url></web_notify_url>
+        <redirect_uri></redirect_uri>
+        <cert_path></cert_path>
+    </wx>
+   <!--<wx>-->
+        <!--&lt;!&ndash; 0:订阅号 1 服务号  2企业号 &ndash;&gt;-->
+        <!--<id>wx02</id>-->
+        <!--<type>2</type>-->
+        <!--<AppId>wx4c18a056ebf26d95</AppId>-->
+        <!--<AppSecret>Ly5JTkfFV2EwlrRryxwwxagFueRWOk7xI-JWZjgOhQ6MmYTNYAQl99xg67e14_qD</AppSecret>-->
+        <!--<macid></macid>-->
+        <!--<key></key>-->
+        <!--<notify_url></notify_url>-->
+        <!--<web_notify_url></web_notify_url>-->
+        <!--<redirect_uri></redirect_uri>-->
+        <!--<cert_path></cert_path>-->
+    <!--</wx>-->
+    
+</wxs>

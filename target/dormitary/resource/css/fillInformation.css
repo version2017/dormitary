@@ -1,0 +1,17 @@
+body{background-color: #efeff4;}
+.headDiv{width: 100%;height: 40px;line-height: 40px;border-bottom: 1px solid rgb(220,220,220);}
+.headDiv{font-size: 16px;text-align: center;display: inline-block;}
+.headDiv a{color: rgb(153,153,153);}
+.fillMain{width: 100%;background-color: white;margin-top: 0;}
+#headDiv1{width: 100%;}
+.choosed a{color: rgb(0,135,132);border-bottom: 2px solid rgb(0,135,132);padding-bottom: 8px;}
+.weui-cells{font-size: 16px;}
+.weui-cell__bd{color: rgb(117,117,117);}
+.cellInp{text-align: right;width: 96%;color: inherit;}
+.cellSel{color: rgb(117,117,117);}
+#birthInp{text-align: right;margin-left: 23px;}
+#birthInp:after{content:" ";display:inline-block;height:6px;width:6px;border-width:2px 2px 0 0;border-color:#c8c8cd;border-style:solid;-webkit-transform:matrix(.71,.71,-.71,.71,0,0);transform:matrix(.71,.71,-.71,.71,0,0);position:relative;top:-2px;position:absolute;top:50%;right:15px;margin-top:-4px}
+.sgtz{width: 86%;}
+.sgtzUnit{color: inherit;}
+#stzk{width: 170px;}
+.subBut-family{width: 80%;margin-top: 20px;margin-bottom: 20px;}
