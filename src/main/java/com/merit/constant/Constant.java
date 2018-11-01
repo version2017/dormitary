@@ -43,9 +43,9 @@ public class Constant {
     /*测试环境下，微信接口返回用户ID的JSON串的键*/
     public static String GET_OPEN_ID_KEY = "OpenId";
     /*测试服务器域名*/
-    public static String SERVER_DOMAIN_PORT = "http://21155o59v4.imwork.net:26071";
+    public static String SERVER_DOMAIN_PORT = "http://21155o59v4.imwork.net:14812";
     /*测试服务器首页链接URLEncoded*/
-    public static String INDEX_URL_ENCODED = "http%3a%2f%2f21155o59v4.imwork.net%3a26071%2fdormitary%2fview%2fgetOpenId";
+    public static String INDEX_URL_ENCODED = "http%3a%2f%2f21155o59v4.imwork.net%3a14812%2fdormitary%2fview%2fgetOpenId";
 
 
 

@@ -20,7 +20,7 @@
         <%@include file="common/commonStyleAndScript.jsp"%>
         <link rel="stylesheet" type="text/css" href="${PROJECT_NAME}/resource/css/common/jquery-weui.css"/>
         <script type="application/javascript">
-            /*网页授权(此页面的作用)：为了能在微信中打开系统的网页而不出现警告*/
+            /*调用网页授权接口：为了能在微信中打开系统的网页而不出现警告*/
             var url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=<%=Constant.APP_ID%>&redirect_uri=<%=Constant.INDEX_URL_ENCODED%>&response_type=code&scope=snsapi_base&agentid=<%=Constant.AGENT_ID%>#wechat_redirect";
             window.location.href = url;
         </script>
